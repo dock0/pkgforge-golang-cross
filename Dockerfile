@@ -3,6 +3,7 @@ RUN pacman -Syu --noconfirm --needed clang
 
 RUN git clone https://github.com/tpoechtrager/osxcross.git /opt/osxcross
 
+ENV OSX_SDK=MacOSX10.11.sdk
 ENV OSX_NDK_X86=/usr/local/osx-ndk-x86
 ENV OSX_SDK_VERSION=10.11
 ENV OSX_SDK_FILE="MacOSX${OSX_SDK_VERSION}.sdk.tar.xz"
