@@ -1,5 +1,5 @@
 FROM dock0/pkgforge-golang
-RUN pacman -Syu --noconfirm --needed clang
+RUN pacman -S --noconfirm --needed clang
 
 RUN git clone https://github.com/tpoechtrager/osxcross.git /opt/osxcross
 
