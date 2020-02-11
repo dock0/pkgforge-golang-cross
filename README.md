@@ -1,9 +1,8 @@
-dock0/pkgforge-golang
+dock0/pkgforge-golang-cross
 ==========
 
-[![Automated Build](https://img.shields.io/docker/build/dock0/pkgforge-golang-cross.svg)](https://hub.docker.com/r/dock0/pkgforge-golang-cross/)
-[![Build Status](https://img.shields.io/travis/com/dock0/pkgforge-golang-cross.svg)](https://travis-ci.com/dock0/pkgforge-golang-cross)
-[![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dock0/pkgforge-golang-cross/Build)](https://github.com/dock0/pkgforge-golang-cross/actions))
+[![License](https://img.shields.io/github/license/dock0/pkgforge-golang-cross)](https://github.com/dock0/pkgforge-golang-cross/blob/master/LICENSE)
 
 Docker image for use with [pkgforge-golang-helper](https://github.com/akerl/pkgforge-golang-helper), which includes cross-compilation libraries for building CGO_ENABLED OSX projects.
 
