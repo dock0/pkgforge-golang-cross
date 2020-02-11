@@ -14,7 +14,7 @@ ENV OSX_SDK_CHECKSUM=694a66095a3514328e970b14978dc78c0f4d170e590fa7b2c3d3674b75f
 RUN curl -sLo "$OSX_SDK_PATH" "$OSX_SDK_URL"
 RUN if [[ "$(sha256sum "${OSX_SDK_PATH}" | cut -d' ' -f1)" != "${OSX_SDK_CHECKSUM}" ]] ; then echo 'OSX SDK Checksum mismatch' && exit 1 ; fi
 
-RUN sed -i -e 's|-march=native||g' /opt/osxcross/build_clang.sh /opt/osxcross/wrapper/build.sh
+RUN sed -i -e 's|-march=native||g' /opt/osxcross/build_clang.sh
 RUN UNATTENDED=yes /opt/osxcross/build.sh
 RUN mv "/opt/osxcross/target" "$OSX_NDK_X86"
 ADD patch.tar.xz $OSX_NDK_X86/SDK/$OSX_SDK/usr/include/c++
