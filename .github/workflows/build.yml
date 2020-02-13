@@ -1,5 +1,9 @@
 name: Build
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+  schedule:
+  - cron: "0 * * * *"
 jobs:
   build:
     name: Build
@@ -13,17 +17,28 @@ jobs:
       run: ./meta/login.sh
       env:
         GITHUB_TOKEN: ${{ github.token }}
-    - name: Build container
-      run: docker build -t new .
-    - name: Test container
-      run: ./scripts/test.sh
-    - name: Publish images
-      run: ./meta/publish.sh
+
+    - name: Update
+      id: update
+      run: ./meta/update.rb
+      if: github.event_name == 'schedule'
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        GITHUB_REPO: ${{ github.repository }}
+
+    - name: Build container
+      run: docker build -t new .
+      if: github.event_name != 'schedule' || steps.update.outputs.updated == 'yes'
+    - name: Test container
+      run: ./scripts/test.sh
+      if: github.event_name != 'schedule' || steps.update.outputs.updated == 'yes'
+    - name: Publish images
+      run: ./meta/publish.sh
+      if: github.event_name == 'push' || steps.update.outputs.updated == 'yes'
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
     - name: Notify on success
-      if: success()
+      if: success() && github.event_name != 'schedule'
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       uses: akerl/github-action-slack-notify-build@v1.1.1
@@ -40,4 +55,3 @@ jobs:
         channel_id: ${{ secrets.SLACK_BOT_CHANNEL }}
         status: failed
         color: danger
-
