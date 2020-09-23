@@ -1,4 +1,4 @@
-FROM docker.pkg.github.com/dock0/pkgforge-golang/pkgforge-golang:20200923-ef794ac
+FROM docker.pkg.github.com/dock0/pkgforge-golang/pkgforge-golang:20200923-b0669ae
 RUN pacman -S --noconfirm --needed clang cmake python
 
 RUN git clone https://github.com/tpoechtrager/osxcross.git /opt/osxcross
