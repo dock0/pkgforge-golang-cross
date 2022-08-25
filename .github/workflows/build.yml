@@ -7,24 +7,24 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout
-      uses: akerl/action-checkout@v2.0.0
-    - name: Submodules
-      run: git submodule update --init --recursive
-    - name: Registry auth
-      run: ./meta/login.sh
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
     - name: Update
       id: update
       run: ./meta/update.rb
       if: github.event_name == 'schedule'
       env:
         GITHUB_TOKEN: ${{ github.token }}
-
     - name: Build container
       run: docker build -t new .
       if: github.event_name != 'schedule' || steps.update.outputs.updated == 'yes'
@@ -34,24 +34,23 @@ jobs:
     - name: Publish images
       run: ./meta/publish.sh
       if: github.event_name == 'push' || steps.update.outputs.updated == 'yes'
+    - name: Post to a Slack channel
+      if: ${{ failure() }}
+      uses: slackapi/slack-github-action@v1.18.0
       env:
-        GITHUB_TOKEN: ${{ github.token }}
-
-    - name: Notify on success
-      if: success() && github.event_name != 'schedule'
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: akerl/github-action-slack-notify-build@v1.1.1
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       with:
-        channel_id: ${{ secrets.SLACK_BOT_CHANNEL }}
-        status: success
-        color: good
-    - name: Notify on failure
-      if: failure()
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: akerl/github-action-slack-notify-build@v1.1.1
-      with:
-        channel_id: ${{ secrets.SLACK_BOT_CHANNEL }}
-        status: failed
-        color: danger
+        payload: |
+          {
+            "text": "*${{ github.repository }}*\nBuild failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*${{ github.repository }}*\nBuild failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+            ]
+          }
