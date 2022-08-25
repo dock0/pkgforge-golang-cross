@@ -1,4 +1,4 @@
-FROM ghcr.io/dock0/pkgforge-golang:latest
+FROM ghcr.io/dock0/pkgforge-golang:20220825-e6b8656
 RUN pacman -S --noconfirm --needed clang cmake python
 
 RUN git clone https://github.com/tpoechtrager/osxcross.git /opt/osxcross
