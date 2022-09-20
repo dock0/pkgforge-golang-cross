@@ -1,4 +1,4 @@
-FROM ghcr.io/dock0/pkgforge-golang:20220920-ff1762d
+FROM ghcr.io/dock0/pkgforge-golang:20220920-14fc4ab
 RUN pacman -S --noconfirm --needed clang cmake python
 
 ENV OSX_CROSS_PATH=/opt/osxcross
