@@ -1,8 +1,8 @@
-FROM ghcr.io/dock0/pkgforge-golang:20260710-35d8da9
+FROM ghcr.io/dock0/pkgforge-golang:v1.0.0
 RUN pacman -S --noconfirm --needed clang cmake python
 
 ENV OSX_CROSS_PATH=/opt/osxcross
-ENV OSX_SDK_VERSION=14.0
+ENV OSX_SDK_VERSION=26.1
 ENV OSX_SDK=MacOSX${OSX_SDK_VERSION}.sdk
 
 RUN git clone https://github.com/tpoechtrager/osxcross.git "${OSX_CROSS_PATH}"
